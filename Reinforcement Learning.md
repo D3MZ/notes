@@ -1,3 +1,7 @@
+# Reinforcement learning
+Markov decision process (MDP) is a tuple $(\mathcal{S}, \mathcal{A}, T, R, \gamma)$.  
+A partially observable Markov decision process (POMDP) is a generalization of a Markov decision process (MDP); tuple $(\mathcal{S}, \mathcal{A}, T, R, \mathcal{O}, Z, \gamma)$.
+
 | Symbol         | Meaning                                                                 |
 |----------------|-------------------------------------------------------------------------|
 | $\mathcal{S}$  | Set of states                                                           |
