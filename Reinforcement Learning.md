@@ -104,13 +104,26 @@ Let:
 - $V(s)$: state-value function  
 - $\pi(a \mid s)$: policy  
 
-| # | Method                        | Update Rule / Formula |
-|---|-------------------------------|------------------------|
-| 1 | Temporal Difference (TD(0))   | $V(s_t) \leftarrow V(s_t) + \alpha \left[ r_t + \gamma V(s_{t+1}) - V(s_t) \right]$ |
-| 2 | SARSA (On-Policy)             | $Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_t + \gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \right]$ |
-| 3 | Q-Learning (Off-Policy)       | $Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) \right]$ |
-| 4 | Expected SARSA                | $Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_t + \gamma \sum_{a'} \pi(a' \mid s_{t+1}) Q(s_{t+1}, a') - Q(s_t, a_t) \right]$ |
-| 5 | n-Step TD                     | $G_t^{(n)} = \sum_{k=0}^{n-1} \gamma^k r_{t+k} + \gamma^n V(s_{t+n})$ |
-| 6 | TD($\lambda$) (Forward View) | $G_t^\lambda = (1 - \lambda) \sum_{n=1}^\infty \lambda^{n-1} G_t^{(n)}$, $V(s_t) \leftarrow V(s_t) + \alpha \left[ G_t^\lambda - V(s_t) \right]$ |
-| 7 | Bootstrapped Target Annotated | $\text{Target} = r_t + \gamma V(s_{t+1})$, with $V(s_{t+1})$ bootstrapped estimate |
-
+| #  | Method                                   | Category                       | Update Rule / Formula |
+|----|------------------------------------------|--------------------------------|------------------------|
+| 1  | Reinforcement Learning                   | Framework                      | $`J(\theta) = \mathbb{E}_{\pi_\theta} \left[ \sum_{t=0}^T \gamma^t r_t \right]`$ |
+| 2  | Deep Q-Learning (DQN)                    | Value-based, Off-policy        | $`L(\theta) = \mathbb{E}_{(s,a,r,s')} \left[ r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta) \right]^2`$ |
+| 3  | Prioritized Experience Replay (PER)      | Sampling strategy              | $`p_i \propto |\delta_i|^\alpha`, $\delta_i = r + \gamma \max_{a'} Q(s', a') - Q(s, a)`, weighted by $w_i = \left( \frac{1}{N p_i} \right)^\beta`$ |
+| 4  | Soft Q-Learning                          | Entropy-regularized, Off-policy | $`Q(s, a) \leftarrow r + \gamma \mathbb{E}_{s'} [ V(s') ]`, $V(s) = \alpha \log \sum_a \exp ( Q(s, a)/\alpha )`$ |
+| 5  | REINFORCE                                | Policy-gradient, On-policy     | $`\nabla_\theta J(\theta) = \mathbb{E} [ \sum_t \nabla_\theta \log \pi_\theta(a_t \mid s_t) G_t ]`, $G_t = \sum_{\tau=t}^T \gamma^{\tau - t} r_\tau`$ |
+| 6  | Proximal Policy Optimization (PPO)       | Policy-gradient, On-policy     | $`L^{\mathrm{CLIP}} = \mathbb{E} [ \min ( r_t(\theta) \hat{A}_t, \mathrm{clip}(r_t(\theta), 1 - \epsilon, 1 + \epsilon) \hat{A}_t ) ]`$ |
+| 7  | Lagrange-Constrained PPO                 | Safe RL                        | $`L = \mathbb{E} [ L^{\mathrm{CLIP}} - \lambda (c - d) ]`, constraint: $\mathbb{E}[c] \le d`$ |
+| 8  | Advantage Actor-Critic (A2C)             | Actor-critic, On-policy        | Actor: $`\nabla_\theta J = \mathbb{E}[\nabla_\theta \log \pi(a \mid s) A(s,a)]`$, Critic: $`\min (r + \gamma V(s') - V(s))^2`$ |
+| 9  | Deep Deterministic Policy Gradient (DDPG)| Actor-critic, Off-policy       | Critic: $`\min ( r + \gamma Q(s', \mu(s')) - Q(s, a) )^2`$, Actor: $`\nabla_\theta J = \mathbb{E}[\nabla_a Q(s,a) \nabla_\theta \mu(s)]`$ |
+| 10 | Twin Delayed DDPG (TD3)                  | Actor-critic, Off-policy       | $`y = r + \gamma \min_i Q_i(s', \mu(s'))`$, with clipped noise and delayed actor update |
+| 11 | Soft Actor-Critic (SAC)                  | Entropy-regularized, Off-policy| Critic: $`\min (Q(s,a) - y)^2`, $y = r + \gamma \mathbb{E}_{a'}[Q(s', a') - \alpha \log \pi(a'|s')]`$<br>Actor: $`\min \mathbb{E}[\alpha \log \pi(a|s) - Q(s,a)]`$ |
+| 12 | Behavioral Cloning                       | Imitation, Supervised          | $`\min_\theta \sum_i -\log \pi_\theta(a_i \mid s_i)`$ |
+| 13 | GAIL (On-policy / Off-policy)            | Adversarial Imitation          | $`\min_\pi \max_D \mathbb{E}_\pi[\log D(s,a)] + \mathbb{E}_{\pi_E}[\log (1 - D(s,a))] - \lambda H(\pi)`$ |
+| 14 | Adversarial Value Moment IL (AdVIL)      | Adversarial Imitation          | $`\mathbb{E}_\pi[\phi(s,a)] = \mathbb{E}_{\pi_E}[\phi(s,a)]`$ (match feature moments via adversary) |
+| 15 | Adversarial Reinforced IL (AdRIL)        | Adversarial Imitation          | Variant of AdVIL with value-based critic in adversarial loop |
+| 16 | SQIL                                     | Imitation-augmented RL         | Expert transitions get $`+1`$ reward, agent transitions $`0`$; Q-learning used normally |
+| 17 | ASAF (Adversarial Soft Advantage Fitting)| Adversarial Imitation          | Match expert advantage via adversarial fitting |
+| 18 | Inverse Q-Learning (IQLearn)             | Inverse RL                     | $`\pi_E(a \mid s) \propto \exp(Q(s,a)/\tau)`$ (recover Q from expert policy) |
+| 19 | Batch SAC                                | Offline RL                     | SAC applied to fixed dataset with added conservatism |
+| 20 | Conservative Q-Learning (CQL)            | Offline RL                     | $`\min_\theta \mathbb{E}_{\mathcal{D}}[(Q(s,a) - y)^2] + \alpha (\mathbb{E}_{a \sim \pi}[Q(s,a)] - \mathbb{E}_{a \sim \mathcal{D}}[Q(s,a)])`$ |
+| 21 | Robust Adversarial RL (RARL)             | Adversarial RL                 | $`\max_\pi \min_\xi \mathbb{E}_{\pi, \xi} [ \sum_t r(s_t, a_t, \xi_t) ]`$, $\xi$ is adversarial perturbation |
