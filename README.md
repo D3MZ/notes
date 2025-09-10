@@ -1,0 +1,1 @@
+All notes are WIP. Please make a PR for any errors or simplifications.
