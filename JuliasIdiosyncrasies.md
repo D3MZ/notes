@@ -1,3 +1,9 @@
+---
+title: Julia's Idiosyncrasies
+layout: default
+permalink: /julias-idiosyncrasies/
+---
+
 # Julia’s Idiosyncrasies
 
 ## Anecdotes 

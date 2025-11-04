@@ -1,3 +1,9 @@
+---
+title: Reinforcement Learning
+layout: default
+permalink: /reinforcement-learning/
+---
+
 # Reinforcement learning
 Markov decision process (MDP) is a tuple $(\mathcal{S}, \mathcal{A}, T, R, \gamma)$.  
 A partially observable Markov decision process (POMDP) is a generalization of a Markov decision process (MDP); tuple $(\mathcal{S}, \mathcal{A}, T, R, \mathcal{O}, Z, \gamma)$.
@@ -127,3 +133,5 @@ Let:
 | 19 | Batch SAC                                | Offline RL                     | SAC applied to fixed dataset with added conservatism |
 | 20 | Conservative Q-Learning (CQL)            | Offline RL                     | $`\min_\theta \mathbb{E}_{\mathcal{D}}[(Q(s,a) - y)^2] + \alpha (\mathbb{E}_{a \sim \pi}[Q(s,a)] - \mathbb{E}_{a \sim \mathcal{D}}[Q(s,a)])`$ |
 | 21 | Robust Adversarial RL (RARL)             | Adversarial RL                 | $`\max_\pi \min_\xi \mathbb{E}_{\pi, \xi} [ \sum_t r(s_t, a_t, \xi_t) ]`$, $\xi$ is adversarial perturbation |
+#%%%
+--- # placeholder? OOPS cannot include comment etc. need to adjust** Wait wrong? CANCEL? we can't easily** 
